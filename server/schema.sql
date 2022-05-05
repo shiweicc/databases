@@ -3,39 +3,31 @@ CREATE DATABASE chat;
 
 USE chat;
 
-DROP SCHEMA IF EXISTS Users;
-CREATE TABLE Users (
-  userID int NOT NULL,
-  username varchar(255),
-  PRIMARY KEY (userID)
-);
 
-DROP SCHEMA IF EXISTS Messages;
-CREATE TABLE Messages (
+DROP SCHEMA IF EXISTS messages;
+CREATE TABLE messages (
   messageID int NOT NULL,
   messageText text NOT NULL,
   roomname varchar(255),
-  userID int NOT NULL,
+  username varchar(255),
   createdAT timestamp,
-  PRIMARY KEY (messageID),
-  FOREIGN KEY(userID) REFERENCES Users(userID)
+  PRIMARY KEY (messageID)
 );
 
 
 /* Create other tables and define schemas for them here! */
-
 /*  Execute this file from the command line by typing:
  *    mysql -u root < server/schema.sql
- *  to create the database and the tables.*/
+ *  to create the database and the tables.
 
--- CREATE TABLE Persons (
---     PersonID int,
---     LastName varchar(255),
---     FirstName varchar(255),
---     Address varchar(255),
---     City varchar(255)
+-- DROP SCHEMA IF EXISTS users;
+-- CREATE TABLE users (
+--   userID int NOT NULL,
+--   username varchar(255),
+--   PRIMARY KEY (userID)
 -- );
-/*
+
+
 campus: "hr-rpp"
 created_at: "2022-04-23T17:41:52.420Z"
 github_handle: "davidltruong"
