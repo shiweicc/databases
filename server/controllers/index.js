@@ -5,16 +5,18 @@ module.exports = {
     get: function (req, res) {
       models.messages.get((error, messages)=> {
         if (error) {
-          res.status(404).send('Sorry, we cannot find that!');
+          res.status(404).send('Sorry, we cannot find message!');
         } else {
           res.send(messages);
         }
       });
     }, // a function which handles a get request for all messages
     post: function (req, res) {
+      console.log('body outside of the message post request: ', req.body);
       models.messages.post(req.body, (error, messages)=> {
+        console.log('body inside of the message post request: ', req.body);
         if (error) {
-          res.status(404).send('Sorry, we cannot find that!');
+          res.status(404).send('Sorry, we cannot post the message!');
         } else {
           res.status(201);
           res.send('Success!');
@@ -25,8 +27,28 @@ module.exports = {
 
   users: {
     // Ditto as above
-    get: function (req, res) {},
-    post: function (req, res) {}
+    get: function (req, res) {
+      models.users.get((error, messages)=> {
+        if (error) {
+          res.status(404).send('Sorry, we cannot find the user!');
+        } else {
+          res.send(messages);
+        }
+      });
+    },
+
+    post: function (req, res) {
+      console.log('body outside of the user post request: ', req.body);
+      models.users.post(req.body, (error, messages)=> {
+        console.log('body inside of the user post request: ', req.body);
+        if (error) {
+          res.status(404).send('Sorry, we cannot post the user!');
+        } else {
+          res.status(201);
+          res.send('Success!');
+        }
+      });
+    }
   }
 };
 
