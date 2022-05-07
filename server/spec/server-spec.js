@@ -31,7 +31,7 @@ describe('Persistent Node Chat Server', function() {
     // Post the user to the chat server.
     request({
       method: 'POST',
-      uri: 'http://127.0.0.1:3000/classes/users',
+      uri: 'http://127.0.0.1:3000/classes/messages',
       json: { username: 'Valjean' }
     }, function () {
       // Post a message to the node chat server:
