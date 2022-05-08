@@ -5,19 +5,19 @@ USE chat;
 
 DROP SCHEMA IF EXISTS users;
 CREATE TABLE users (
-  userID int NOT NULL AUTO_INCREMENT,
+  id int NOT NULL AUTO_INCREMENT,
   username varchar(255),
-  PRIMARY KEY (userID)
+  PRIMARY KEY (id)
 );
 
 DROP SCHEMA IF EXISTS messages;
 CREATE TABLE messages (
-  messageID int NOT NULL AUTO_INCREMENT,
+  id int NOT NULL AUTO_INCREMENT,
   messageText varchar(255),
   roomname varchar(255),
   userID int NOT NULL,
-  PRIMARY KEY (messageID),
-  FOREIGN KEY (userID) REFERENCES users(userID)
+  PRIMARY KEY (id),
+  FOREIGN KEY (userID) REFERENCES users(id)
 );
 
 
@@ -36,4 +36,3 @@ text: "test"
 updated_at: "2022-04-23T17:41:52.420Z"
 username: "david"
 */
-

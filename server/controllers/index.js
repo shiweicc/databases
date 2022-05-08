@@ -12,9 +12,7 @@ module.exports = {
       });
     }, // a function which handles a get request for all messages
     post: function (req, res) {
-      console.log('body outside of the message post request: ', req.body);
       models.messages.post(req.body, (error, messages)=> {
-        console.log('body inside of the message post request: ', req.body);
         if (error) {
           res.status(404).send('Sorry, we cannot post the message!');
         } else {
@@ -38,9 +36,7 @@ module.exports = {
     },
 
     post: function (req, res) {
-      console.log('body outside of the user post request: ', req.body);
       models.users.post(req.body, (error, messages)=> {
-        console.log('body inside of the user post request: ', req.body);
         if (error) {
           res.status(404).send('Sorry, we cannot post the user!');
         } else {
@@ -51,15 +47,3 @@ module.exports = {
     }
   }
 };
-
-/*
-app.get("/page/:id",function(request, response){
-    var id = request.params.id;
-    // do something with id
-    // send a response to user based on id
-    var obj = { id : id, Content : "content " +id };
-
-    response.writeHead(200, {"Content-Type": "application/json"});
-    response.write(JSON.stringify(obj));
-});
-*/

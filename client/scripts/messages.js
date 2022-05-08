@@ -31,10 +31,10 @@ var Messages = {
 
   _conform: function(message) {
     // ensure each message object conforms to expected shape
-    message.text = message.text || '';
+    message.text = message.messagesText || '';
     message.username = message.username || '';
     message.roomname = message.roomname || '';
     return message;
   }
-  
+
 };

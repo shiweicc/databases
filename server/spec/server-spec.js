@@ -21,9 +21,6 @@ describe('Persistent Node Chat Server', function() {
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
-    // SET FOREIGN_KEY_CHECKS = 0;
-    // TRUNCATE table $table_name;
-    // SET FOREIGN_KEY_CHECKS = 1;
     dbConnection.query('SET FOREIGN_KEY_CHECKS = 0');
     dbConnection.query('truncate ' + messagesTable);
     dbConnection.query('truncate ' + usersTable);
@@ -47,7 +44,7 @@ describe('Persistent Node Chat Server', function() {
         uri: 'http://127.0.0.1:3000/classes/messages',
         json: {
           username: 'Valjean',
-          message: 'In mercy\'s name, three days is all I need.',
+          text: 'In mercy\'s name, three days is all I need.',
           roomname: 'Hello'
         }
       }, function () {
@@ -59,14 +56,11 @@ describe('Persistent Node Chat Server', function() {
         var queryString = 'SELECT * FROM messages';
         var queryArgs = [];
 
-
         dbConnection.query(queryString, queryArgs, function(err, results) {
           // Should have one result:
-          console.log('RESULTS ---', results[0]);
           expect(results.length).to.equal(1);
 
           // TODO: If you don't have a column named text, change this test.
-          console.log('RESULTS', results[0]);
           expect(results[0].messageText).to.equal('In mercy\'s name, three days is all I need.');
 
           done();
@@ -88,7 +82,7 @@ describe('Persistent Node Chat Server', function() {
         uri: 'http://127.0.0.1:3000/classes/messages',
         json: {
           username: 'Javert',
-          message: 'Men like you can never change!',
+          text: 'Men like you can never change!',
           roomname: 'main'
         }
       }, function() {
@@ -101,41 +95,17 @@ describe('Persistent Node Chat Server', function() {
 
         dbConnection.query(queryString, queryArgs, function (err) {
           if (err) { throw err; }
-
           // Now query the Node chat server and see if it returns
           // the message we just inserted:
           request('http://127.0.0.1:3000/classes/messages', function (error, response, body) {
             var messageLog = JSON.parse(body);
-            console.log('MESSAGE LOG', messageLog[0]);
             expect(messageLog[0].messageText).to.equal('Men like you can never change!');
             expect(messageLog[0].roomname).to.equal('main');
-
             done();
           });
         });
       });
     });
-    // // Let's insert a message into the db
-    // var queryString = 'SELECT * from messages';
-    // var queryArgs = [];
-    // // TODO - The exact query string and query args to use
-    // // here depend on the schema you design, so I'll leave
-    // // them up to you. */
-
-    // dbConnection.query(queryString, queryArgs, function(err) {
-    //   if (err) { throw err; }
-
-    //   // Now query the Node chat server and see if it returns
-    //   // the message we just inserted:
-    //   request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
-    //     var messageLog = JSON.parse(body);
-    //     console.log('MESSAGE LOG', messageLog[0]);
-    //     expect(messageLog[0].messageText).to.equal('Men like you can never change!');
-    //     expect(messageLog[0].roomname).to.equal('main');
-    //     done();
-    //   });
-    // });
-    // done();
   });
 
 
@@ -152,7 +122,7 @@ describe('Persistent Node Chat Server', function() {
         uri: 'http://127.0.0.1:3000/classes/messages',
         json: {
           username: 'Betty',
-          message: 'How are you?',
+          text: 'How are you?',
           roomname: 'Chilling'
         }
       }, function () {
@@ -162,7 +132,7 @@ describe('Persistent Node Chat Server', function() {
           uri: 'http://127.0.0.1:3000/classes/messages',
           json: {
             username: 'Betty',
-            message: 'yeahyeah',
+            text: 'yeahyeah',
             roomname: 'main'
           }
         }, function () {
@@ -174,21 +144,59 @@ describe('Persistent Node Chat Server', function() {
           var queryString = 'SELECT * FROM messages';
           var queryArgs = [];
 
-
           dbConnection.query(queryString, queryArgs, function(err, results) {
             // Should have one result:
-            console.log('RESULTS ---', results[1]);
             expect(results.length).to.equal(2);
 
             // TODO: If you don't have a column named text, change this test.
-            console.log('RESULTS', results[1]);
+            expect(results[0].messageText).to.equal('How are you?');
             expect(results[1].messageText).to.equal('yeahyeah');
-
             done();
           });
         });
       });
-      // done();
+    });
+  });
+
+  it('Should not add duplicated username in the users table', function(done) {
+    request({
+      method: 'POST',
+      uri: 'http://127.0.0.1:3000/classes/users',
+      json: { username: 'Betty' }
+    }, function () {
+      request({
+        method: 'POST',
+        uri: 'http://127.0.0.1:3000/classes/messages',
+        json: {
+          username: 'Betty',
+          text: 'How are you?',
+          roomname: 'Chilling'
+        }
+      }, function () {
+        request({
+          method: 'POST',
+          uri: 'http://127.0.0.1:3000/classes/messages',
+          json: {
+            username: 'Betty',
+            text: 'yeahyeah',
+            roomname: 'main'
+          }
+        }, function () {
+        // Now if we look in the database, we should find the
+        // posted message there.
+          var queryString = 'SELECT * FROM users';
+          var queryArgs = [];
+
+          dbConnection.query(queryString, queryArgs, function(err, results) {
+            // Should have one result:
+            expect(results.length).to.equal(1);
+
+            expect(results[0].username).to.equal('Betty');
+            expect(results[0].id).to.equal(1);
+            done();
+          });
+        });
+      });
     });
   });
 });
